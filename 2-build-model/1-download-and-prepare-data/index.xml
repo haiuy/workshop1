@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Download and prepare data on Building and deploying a time series model</title>
+    <link>/2-build-model/1-download-and-prepare-data/</link>
+    <description>Recent content in Download and prepare data on Building and deploying a time series model</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate></lastBuildDate>
+    <atom:link href="/2-build-model/1-download-and-prepare-data/index.xml" rel="self" type="application/rss+xml" />
+  </channel>
+</rss>

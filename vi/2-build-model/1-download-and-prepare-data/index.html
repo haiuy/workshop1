@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="vi" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.131.0">
+    <meta name="description" content="">
+<meta name="author" content="journeyoftheaverageguy@gmail.com">
+
+    <link rel="icon" href="../../../images/favicon.png" type="image/png">
+
+    <title>Thu thập và chuẩn bị dữ liệu :: Xây dựng và vận hành mô hình học máy dự báo chuỗi thời gian</title>
+
+    
+    <link href="../../../css/nucleus.css?1725683551" rel="stylesheet">
+    <link href="../../../css/fontawesome-all.min.css?1725683551" rel="stylesheet">
+    <link href="../../../css/hybrid.css?1725683551" rel="stylesheet">
+    <link href="../../../css/featherlight.min.css?1725683551" rel="stylesheet">
+    <link href="../../../css/perfect-scrollbar.min.css?1725683551" rel="stylesheet">
+    <link href="../../../css/auto-complete.css?1725683551" rel="stylesheet">
+    <link href="../../../css/atom-one-dark-reasonable.css?1725683551" rel="stylesheet">
+    <link href="../../../css/theme.css?1725683551" rel="stylesheet">
+    <link href="../../../css/hugo-theme.css?1725683551" rel="stylesheet">
+    
+    <link href="../../../css/theme-workshop.css?1725683551" rel="stylesheet">
+    
+    
+
+    <script src="../../../js/jquery-3.3.1.min.js?1725683551"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="../../../vi/2-build-model/1-download-and-prepare-data/">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <a id="logo" href="../../../">
+
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" width="30%"><defs><style>.cls-1{fill:#fff;}.cls-2{fill:#f90;fill-rule:evenodd;}</style></defs><title>AWS-Logo_White-Color</title><path class="cls-1" d="M14.09,10.85a4.7,4.7,0,0,0,.19,1.48,7.73,7.73,0,0,0,.54,1.19.77.77,0,0,1,.12.38.64.64,0,0,1-.32.49l-1,.7a.83.83,0,0,1-.44.15.69.69,0,0,1-.49-.23,3.8,3.8,0,0,1-.6-.77q-.25-.42-.51-1a6.14,6.14,0,0,1-4.89,2.3,4.54,4.54,0,0,1-3.32-1.19,4.27,4.27,0,0,1-1.22-3.2A4.28,4.28,0,0,1,3.61,7.75,6.06,6.06,0,0,1,7.69,6.46a12.47,12.47,0,0,1,1.76.13q.92.13,1.91.36V5.73a3.65,3.65,0,0,0-.79-2.66A3.81,3.81,0,0,0,7.86,2.3a7.71,7.71,0,0,0-1.79.22,12.78,12.78,0,0,0-1.79.57,4.55,4.55,0,0,1-.58.22l-.26,0q-.35,0-.35-.52V2a1.09,1.09,0,0,1,.12-.58,1.2,1.2,0,0,1,.47-.35A10.88,10.88,0,0,1,5.77.32,10.19,10.19,0,0,1,8.36,0a6,6,0,0,1,4.35,1.35,5.49,5.49,0,0,1,1.38,4.09ZM7.34,13.38a5.36,5.36,0,0,0,1.72-.31A3.63,3.63,0,0,0,10.63,12,2.62,2.62,0,0,0,11.19,11a5.63,5.63,0,0,0,.16-1.44v-.7a14.35,14.35,0,0,0-1.53-.28,12.37,12.37,0,0,0-1.56-.1,3.84,3.84,0,0,0-2.47.67A2.34,2.34,0,0,0,5,11a2.35,2.35,0,0,0,.61,1.76A2.4,2.4,0,0,0,7.34,13.38Zm13.35,1.8a1,1,0,0,1-.64-.16,1.3,1.3,0,0,1-.35-.65L15.81,1.51a3,3,0,0,1-.15-.67.36.36,0,0,1,.41-.41H17.7a1,1,0,0,1,.65.16,1.4,1.4,0,0,1,.33.65l2.79,11,2.59-11A1.17,1.17,0,0,1,24.39.6a1.1,1.1,0,0,1,.67-.16H26.4a1.1,1.1,0,0,1,.67.16,1.17,1.17,0,0,1,.32.65L30,12.39,32.88,1.25A1.39,1.39,0,0,1,33.22.6a1,1,0,0,1,.65-.16h1.54a.36.36,0,0,1,.41.41,1.36,1.36,0,0,1,0,.26,3.64,3.64,0,0,1-.12.41l-4,12.86a1.3,1.3,0,0,1-.35.65,1,1,0,0,1-.64.16H29.25a1,1,0,0,1-.67-.17,1.26,1.26,0,0,1-.32-.67L25.67,3.64,23.11,14.34a1.26,1.26,0,0,1-.32.67,1,1,0,0,1-.67.17Zm21.36.44a11.28,11.28,0,0,1-2.56-.29,7.44,7.44,0,0,1-1.92-.67,1,1,0,0,1-.61-.93v-.84q0-.52.38-.52a.9.9,0,0,1,.31.06l.42.17a8.77,8.77,0,0,0,1.83.58,9.78,9.78,0,0,0,2,.2,4.48,4.48,0,0,0,2.43-.55,1.76,1.76,0,0,0,.86-1.57,1.61,1.61,0,0,0-.45-1.16A4.29,4.29,0,0,0,43,9.22l-2.41-.76A5.15,5.15,0,0,1,38,6.78a3.94,3.94,0,0,1-.83-2.41,3.7,3.7,0,0,1,.45-1.85,4.47,4.47,0,0,1,1.19-1.37A5.27,5.27,0,0,1,40.51.29,7.4,7.4,0,0,1,42.6,0a8.87,8.87,0,0,1,1.12.07q.57.07,1.08.19t.95.26a4.27,4.27,0,0,1,.7.29,1.59,1.59,0,0,1,.49.41.94.94,0,0,1,.15.55v.79q0,.52-.38.52a1.76,1.76,0,0,1-.64-.2,7.74,7.74,0,0,0-3.2-.64,4.37,4.37,0,0,0-2.21.47,1.6,1.6,0,0,0-.79,1.48,1.58,1.58,0,0,0,.49,1.18,4.94,4.94,0,0,0,1.83.92L44.55,7a5.08,5.08,0,0,1,2.57,1.6A3.76,3.76,0,0,1,47.9,11a4.21,4.21,0,0,1-.44,1.93,4.4,4.4,0,0,1-1.21,1.47,5.43,5.43,0,0,1-1.85.93A8.25,8.25,0,0,1,42.05,15.62Z"></path><path class="cls-2" d="M45.19,23.81C39.72,27.85,31.78,30,25,30A36.64,36.64,0,0,1,.22,20.57c-.51-.46-.06-1.09.56-.74A49.78,49.78,0,0,0,25.53,26.4,49.23,49.23,0,0,0,44.4,22.53C45.32,22.14,46.1,23.14,45.19,23.81Z"></path><path class="cls-2" d="M47.47,21.21c-.7-.9-4.63-.42-6.39-.21-.53.06-.62-.4-.14-.74,3.13-2.2,8.27-1.57,8.86-.83s-.16,5.89-3.09,8.35c-.45.38-.88.18-.68-.32C46.69,25.8,48.17,22.11,47.47,21.21Z"></path></svg>
+
+</a>
+
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="Search...">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="../../../js/lunr.min.js?1725683551"></script>
+<script type="text/javascript" src="../../../js/auto-complete.js?1725683551"></script>
+<script type="text/javascript">
+    
+        var baseurl = "\/\/vi";
+    
+</script>
+<script type="text/javascript" src="../../../js/search.js?1725683551"></script>
+
+    
+  </div>
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/1-prerequisite/" title="Các bước chuẩn bị" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/1-prerequisite/">
+          <b>1. </b>Các bước chuẩn bị
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/1-prerequisite/1-download-jupyter-notebook/" title="Tải Jupyter Notebook" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/1-prerequisite/1-download-jupyter-notebook/">
+          <b>1.1 </b>Tải Jupyter Notebook
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/1-prerequisite/2-download-docker-desktop/" title="Tải và cài đặt Docker Desktop" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/1-prerequisite/2-download-docker-desktop/">
+          <b>1.2 </b>Tải và cài đặt Docker Desktop
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/2-build-model/" title="Xây dựng mô hình học máy" class="dd-item 
+        parent
+        
+        
+        ">
+      <a href="../../../vi/2-build-model/">
+          <b>2. </b>Xây dựng mô hình học máy
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/2-build-model/1-download-and-prepare-data/" title="Thu thập và chuẩn bị dữ liệu" class="dd-item 
+        
+        active
+        
+        ">
+      <a href="../../../vi/2-build-model/1-download-and-prepare-data/">
+          <b>2.1 </b>Thu thập và chuẩn bị dữ liệu
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/2-build-model/2-feature-engineering/" title="Trích chọn đặc trưng" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/2-build-model/2-feature-engineering/">
+          <b>2.2 </b>Trích chọn đặc trưng
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/2-build-model/3-outlier-detection/" title="Loại bỏ dữ liệu ngoại lai" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/2-build-model/3-outlier-detection/">
+          <b>2.3 </b>Loại bỏ dữ liệu ngoại lai
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/2-build-model/4-xgboost-model/" title="Huấn luyện mô hình XGBoost" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/2-build-model/4-xgboost-model/">
+          <b>2.4 </b>Huấn luyện mô hình XGBoost
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/2-build-model/5-model-evaluation/" title="Đánh giá mô hình" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/2-build-model/5-model-evaluation/">
+          <b>2.5 </b>Đánh giá mô hình
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/3-deploy-model/" title="Triển khai mô hình" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/3-deploy-model/">
+          <b>3. </b>Triển khai mô hình
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/3-deploy-model/1-create-api/" title="Khởi tạo API" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/3-deploy-model/1-create-api/">
+          <b>3.1 </b>Khởi tạo API
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/3-deploy-model/2-configure-docker-container/" title="Tinh chỉnh Docker container" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/3-deploy-model/2-configure-docker-container/">
+          <b>3.2 </b>Tinh chỉnh Docker container
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/3-deploy-model/2-configure-docker-container/1-create-dockerfile/" title="Khởi tạo Dockerfile" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/3-deploy-model/2-configure-docker-container/1-create-dockerfile/">
+          <b>3.2.1 </b>Khởi tạo Dockerfile
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/3-deploy-model/2-configure-docker-container/2-create-docker-container/" title="Khởi tạo Docker container" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/3-deploy-model/2-configure-docker-container/2-create-docker-container/">
+          <b>3.2.2 </b>Khởi tạo Docker container
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/3-deploy-model/3-test-api/" title="Kiểm tra API" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/3-deploy-model/3-test-api/">
+          <b>3.3 </b>Kiểm tra API
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/3-deploy-model/4-automate-inference/" title="Tự động dự đoán" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/3-deploy-model/4-automate-inference/">
+          <b>3.4 </b>Tự động dự đoán
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/4-cleaning-resources/" title="Dọn dẹp tài nguyên" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/4-cleaning-resources/">
+          <b>4. </b>Dọn dẹp tài nguyên
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+         
+    </ul>
+
+    
+    
+      <section id="shortcuts">
+        <h3>More</h3>
+        <ul>
+          
+              <li> 
+                  <a class="padding" href="http://awsstudygroup.com"><i class='fab fa-aws'></i> AWS Study Group - Blog</a>
+              </li>
+          
+              <li> 
+                  <a class="padding" href="https://www.facebook.com/groups/660548818043427/"><i class='fab fa-facebook'></i> AWS Study Group - Nhóm FB</a>
+              </li>
+          
+        </ul>
+      </section>
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+        <li>
+          <a class="padding">
+            <i class="fas fa-language fa-fw"></i>
+          <div class="select-style">
+            <select id="select-language" onchange="location = this.value;">
+          
+          
+          
+              
+              
+                  
+                    
+                    
+                      <option id="en" value="/2-build-model/1-download-and-prepare-data/">English</option>
+                    
+                  
+              
+                  
+              
+          
+              
+              
+                  
+              
+                  
+                    
+                    
+                      <option id="vi" value="/vi/2-build-model/1-download-and-prepare-data/" selected>Tiếng Việt</option>
+                    
+                  
+              
+          
+        </select>
+        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+          width="255px" height="255px" viewBox="0 0 255 255" style="enable-background:new 0 0 255 255;" xml:space="preserve">
+          <g>
+            <g id="arrow-drop-down">
+              <polygon points="0,63.75 127.5,191.25 255,63.75 		" />
+            </g>
+          </g>
+        </svg>
+        </div>
+        </a>
+        </li>
+      
+      
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> Clear History</a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <left>
+    
+     <b> Workshop</b> <br>
+    <img src="https://hitwebcounter.com/counter/counter.php?page=7831210&style=0038&nbdigits=9&type=page&initCount=0" title="Migrate" Alt="web counter"   border="0" /></a>  <br>
+     <b> <a href="https://cloudjourney.awsstudygroup.com/">Cloud Journey</a></b> <br>
+    <img src="https://hitwebcounter.com/counter/counter.php?page=7830807&style=0038&nbdigits=9&type=page&initCount=0" title="Total CLoud Journey" Alt="web counter"   border="0"   />
+     
+</left>
+<left>
+    <br>
+    <br>
+        <b> Last Updated </b> <br>
+        <i><font color=orange>07-09-2024</font></i>
+    </left>
+    <left>
+        <br>
+        <br>
+            <b> Team </b> <br>
+           
+            <i>
+                <a href="https://www.linkedin.com/in/jotaguy"  style="color:orange">Gia Hưng</a>
+        </i>
+        </left>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    </section>
+  </div>
+</nav>
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='../../../vi/'>Xây dựng và triển khai mô hình học máy dự báo chuỗi thời gian</a> > <a href='../../../vi/2-build-model/'>Xây dựng mô hình học máy</a> > Thu thập và chuẩn bị dữ liệu
+          
+        
+          
+        
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              Thu thập và chuẩn bị dữ liệu
+            </h1>
+          
+
+        
+
+
+
+	<h4 id="thu-thập-dữ-liệu">Thu thập dữ liệu</h4>
+<ol>
+<li>Đầu tiên, ta sẽ mở file code <strong>Jupyter Notebook</strong> được khởi tạo ở bước thực hành trước lên. Sau đó, viết dòng code dưới vào và bấm tổ hợp nút <strong>Shift+Enter</strong> để chạy.
+<ul>
+<li>Các lệnh này dùng để gọi các thư viện cần thiết cho việc thu thập và xử lý dữ liệu ban đầu. Cách thức thực hiện như sau: đánh lệnh <strong>import</strong>, viết tên thư viện (VD: <strong>pandas</strong>) và thêm tên viết tắt tùy ý (VD: <strong>pd</strong>) vào sau lệnh <strong>as</strong> để tiện cho việc thao tác về sau.</li>
+<li>Ở đây, <strong>pandas</strong> cung cấp cho ta các cấu trúc dữ liệu và công cụ phân tích dữ liệu mạnh mẽ, đặc biệt là để làm việc với dữ liệu dạng bảng (giống như bảng tính Excel) và chuỗi thời gian.</li>
+<li>Thư viện <strong>matplotlib</strong> cho phép ta vẽ các biểu đồ và hình ảnh trực quan từ dữ liệu.</li>
+<li>Thư viện <strong>yfinance</strong> là một thư viện Python phổ biến, được sử dụng để truy xuất dữ liệu tài chính từ Yahoo Finance.</li>
+<li>Bên cạnh đó, chúng ta cũng dùng thư viện <strong>NumPy</strong> cung cấp các công cụ và hàm toán học để làm việc với mảng (arrays) và ma trận (matrices) nhiều chiều, và <strong>datetime</strong> cung cấp các lớp để thao tác với ngày tháng và thời gian.</li>
+</ul>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Gọi các thư viện</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> yfinance <span style="color:#66d9ef">as</span> yf
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> datetime <span style="color:#f92672">import</span> datetime
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span></code></pre></div>
+<div class="notices note" ><p>Nếu môi trường Python của bạn chưa có các thư viện trên, ta tiến hành tải về bằng lệnh <strong>pip install</strong> và đánh tên thư viện theo sau và chạy đoạn code (VD: <strong>pip install pandas</strong>). Ta chỉ cần cài thư viện một lần và dùng lệnh <strong>import</strong> để gọi cho các lần sử dụng sau.</p>
+</div>
+
+<ol start="2">
+<li>Đoạn code sau dùng để thu thập dữ liệu từ thư viện <strong>Yahoo Finance</strong>.
+<ul>
+<li>Đầu tiên ta thực hiện truy cập vào bộ dữ liệu của giá Bitcoin bằng hàm <strong>Ticker</strong> và đánh tên của mã tài sản cần truy cập. Ở đây là <strong>BTC-USD</strong> hay giá Bitcoin theo đồng USD.</li>
+<li>Sau đó tiến hành lưu dữ liệu vào một bảng dữ liệu pandas bằng hàm <strong>history</strong>, nhận tham số là khoảng thời gian cần thu thập của dữ liệu. Ở đây, ta chọn <strong>max</strong> để lấy tất cả dữ liệu mà Yahoo Finance có về giá của đồng tiền này.</li>
+<li>Hàm <strong>drop</strong> với tham số <strong>columns</strong> giúp ta loại bỏ đi các cột của một bảng dữ liệu. Trong trường hợp này, tiến hành bỏ đi hai cột là <strong>Dividends</strong> và <strong>Stock Splits</strong> do chúng không chứa thông tin nào về Bitcoin.</li>
+<li>Sử dụng hàm <strong>to_datetime</strong> của thư viện pandas, ta chuyển đổi kiểu dữ liệu của các chỉ mục thành dạng thời gian mà ngôn ngữ có thể hiểu được.</li>
+</ul>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Lấy data từ yahoo finance</span>
+</span></span><span style="display:flex;"><span>ticker <span style="color:#f92672">=</span> yf<span style="color:#f92672">.</span>Ticker(<span style="color:#e6db74">&#39;BTC-USD&#39;</span>)
+</span></span><span style="display:flex;"><span>df <span style="color:#f92672">=</span> ticker<span style="color:#f92672">.</span>history(period<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;max&#39;</span>)
+</span></span><span style="display:flex;"><span>df<span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>drop(columns<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;Dividends&#39;</span>,<span style="color:#e6db74">&#39;Stock Splits&#39;</span>])
+</span></span><span style="display:flex;"><span>df<span style="color:#f92672">.</span>index <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>to_datetime(df<span style="color:#f92672">.</span>index)
+</span></span><span style="display:flex;"><span>df
+</span></span></code></pre></div><ol start="3">
+<li>Tiến hành in bảng dữ liệu ra bằng lệnh <strong>print(df)</strong> hoặc có thể để <strong>df</strong> không và chạy. Nếu kết quả in ra giống hình dưới thì các bạn đã thành công.</li>
+</ol>
+<p><img alt="Bitcoin price dataframe" src="../../../images/2/workshop_pic10.png?width=50pc"></p>
+<h4 id="chuẩn-bị-dữ-liệu">Chuẩn bị dữ liệu</h4>
+<ol>
+<li>Đầu tiên, ta sẽ tiến hành khởi tạo biến mục tiêu là độ biến động của giá đóng cửa (Rate of change), tức là giá <strong>Close</strong> của ngày hôm sau thay đổi bao nhiêu phần trăm so với giá <strong>Close</strong> của ngày liền trước đó. Dùng hàm <strong>pct_change</strong> lên cột <strong>Close</strong> của bảng dữ liệu trên ta tính được chuỗi dữ liệu mới về <strong>độ biến động của Close</strong>, lưu thành dạng dữ liệu chuỗi của pandas bằng hàm <strong>Series</strong> gọi từ thư viện này và đặt tên <strong>ROC</strong>. Sau đó, ta đưa cột biến mục tiêu này vào lại bảng dữ liệu ban đầu bằng hàm <strong>insert</strong> dưới tên cột là <strong>Targets</strong>.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#Computing rate of change between the close price of 2 consecutive days.</span>
+</span></span><span style="display:flex;"><span>ROC <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>Series(df[<span style="color:#e6db74">&#39;Close&#39;</span>]<span style="color:#f92672">.</span>pct_change())
+</span></span><span style="display:flex;"><span>df<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;Targets&#39;</span>,ROC) 
+</span></span></code></pre></div>
+<div class="notices note" ><p>Việc chuyển đổi bài toán về dự báo <strong>Độ biến động</strong> thay vì dự báo <strong>giá</strong> sẽ giúp việc xây dựng mô hình trở nên chính xác và khả thi hơn. Vì dữ liệu <strong>Độ biến động</strong> không chứa yếu tố xu thế (Trend) như là chuỗi <strong>giá</strong> gốc, nhờ đó ta có thể cho phép mô hình học được những yếu tố khác thay vì chỉ lấy <strong>dữ liệu quá khứ</strong> để dự báo. Trong thực tế các bài thực hiện dự báo <strong>giá</strong> thường không sử dụng được mặc dù có sai số sau huấn luyện rất thấp, vì mô hình sẽ lấy giá trị quá khứ gần nhất để dự báo cho thời gian tiếp theo thay vì học các quy luật từ dữ liệu.</p>
+</div>
+
+<ol start="2">
+<li>Ta có thể thấy bộ dữ liệu về giá Bitcoin theo ngày sẽ có 5 thành phần: <strong>Open</strong>, <strong>High</strong>, <strong>Low</strong>, <strong>Close</strong>, và <strong>Volume</strong> hay có nghĩa là giá mở cửa, giá cao nhất trong ngày, giá thấp nhất trong ngày, giá đóng cửa và khối lượng Bitcoin giao dịch trong ngày đó. Vì chúng đều chứa thông tin về giá của Bitcoin nên ta sẽ sử dụng làm các biến độc lập (<strong>features</strong>). Ở đây ta phải thực hiện kỹ thuật <strong>shift</strong> để dịch chuyển dữ liệu xuống 1 dòng với các <strong>features</strong>, vì ta chỉ được phép sử dụng các thông tin trong quá khứ để dự báo cho tương lai.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> df<span style="color:#f92672">.</span>columns : <span style="color:#75715e"># shifting other columns to form features</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> i <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;Targets&#39;</span>:
+</span></span><span style="display:flex;"><span>        df[i]<span style="color:#f92672">=</span>df[i]<span style="color:#f92672">.</span>shift(<span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><ol start="3">
+<li>Thực hiện lệnh xuất ra bảng dữ liệu, nếu làm đúng, các bạn sẽ nhìn thấy hình ảnh tại cửa sổ kết quả như sau:</li>
+</ol>
+<p><img alt="Prepare data" src="../../../images/2/workshop_pic11.png?width=50pc"></p>
+<p>Chúc mừng các bạn đã hoàn thành bước thu thập và chuẩn bị dữ liệu.</p>
+
+
+
+
+
+<footer class=" footline" >
+	
+</footer>
+
+        
+        </div> 
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+        
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+        
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="../../../vi/2-build-model/" title="Xây dựng mô hình học máy"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="../../../vi/2-build-model/2-feature-engineering/" title="Trích chọn đặc trưng" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+    
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="../../../js/clipboard.min.js?1725683551"></script>
+    <script src="../../../js/perfect-scrollbar.min.js?1725683551"></script>
+    <script src="../../../js/perfect-scrollbar.jquery.min.js?1725683551"></script>
+    <script src="../../../js/jquery.sticky.js?1725683551"></script>
+    <script src="../../../js/featherlight.min.js?1725683551"></script>
+    <script src="../../../js/highlight.pack.js?1725683551"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="../../../js/modernizr.custom-3.6.0.js?1725683551"></script>
+    <script src="../../../js/learn.js?1725683551"></script>
+    <script src="../../../js/hugo-learn.js?1725683551"></script>
+
+    <link href="../../../mermaid/mermaid.css?1725683551" rel="stylesheet" />
+    <script src="../../../mermaid/mermaid.js?1725683551"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-158079754-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>

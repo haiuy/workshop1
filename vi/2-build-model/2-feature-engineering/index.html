@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="vi" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.131.0">
+    <meta name="description" content="">
+<meta name="author" content="journeyoftheaverageguy@gmail.com">
+
+    <link rel="icon" href="../../../images/favicon.png" type="image/png">
+
+    <title>Trích chọn đặc trưng :: Xây dựng và vận hành mô hình học máy dự báo chuỗi thời gian</title>
+
+    
+    <link href="../../../css/nucleus.css?1725683551" rel="stylesheet">
+    <link href="../../../css/fontawesome-all.min.css?1725683551" rel="stylesheet">
+    <link href="../../../css/hybrid.css?1725683551" rel="stylesheet">
+    <link href="../../../css/featherlight.min.css?1725683551" rel="stylesheet">
+    <link href="../../../css/perfect-scrollbar.min.css?1725683551" rel="stylesheet">
+    <link href="../../../css/auto-complete.css?1725683551" rel="stylesheet">
+    <link href="../../../css/atom-one-dark-reasonable.css?1725683551" rel="stylesheet">
+    <link href="../../../css/theme.css?1725683551" rel="stylesheet">
+    <link href="../../../css/hugo-theme.css?1725683551" rel="stylesheet">
+    
+    <link href="../../../css/theme-workshop.css?1725683551" rel="stylesheet">
+    
+    
+
+    <script src="../../../js/jquery-3.3.1.min.js?1725683551"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="../../../vi/2-build-model/2-feature-engineering/">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <a id="logo" href="../../../">
+
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" width="30%"><defs><style>.cls-1{fill:#fff;}.cls-2{fill:#f90;fill-rule:evenodd;}</style></defs><title>AWS-Logo_White-Color</title><path class="cls-1" d="M14.09,10.85a4.7,4.7,0,0,0,.19,1.48,7.73,7.73,0,0,0,.54,1.19.77.77,0,0,1,.12.38.64.64,0,0,1-.32.49l-1,.7a.83.83,0,0,1-.44.15.69.69,0,0,1-.49-.23,3.8,3.8,0,0,1-.6-.77q-.25-.42-.51-1a6.14,6.14,0,0,1-4.89,2.3,4.54,4.54,0,0,1-3.32-1.19,4.27,4.27,0,0,1-1.22-3.2A4.28,4.28,0,0,1,3.61,7.75,6.06,6.06,0,0,1,7.69,6.46a12.47,12.47,0,0,1,1.76.13q.92.13,1.91.36V5.73a3.65,3.65,0,0,0-.79-2.66A3.81,3.81,0,0,0,7.86,2.3a7.71,7.71,0,0,0-1.79.22,12.78,12.78,0,0,0-1.79.57,4.55,4.55,0,0,1-.58.22l-.26,0q-.35,0-.35-.52V2a1.09,1.09,0,0,1,.12-.58,1.2,1.2,0,0,1,.47-.35A10.88,10.88,0,0,1,5.77.32,10.19,10.19,0,0,1,8.36,0a6,6,0,0,1,4.35,1.35,5.49,5.49,0,0,1,1.38,4.09ZM7.34,13.38a5.36,5.36,0,0,0,1.72-.31A3.63,3.63,0,0,0,10.63,12,2.62,2.62,0,0,0,11.19,11a5.63,5.63,0,0,0,.16-1.44v-.7a14.35,14.35,0,0,0-1.53-.28,12.37,12.37,0,0,0-1.56-.1,3.84,3.84,0,0,0-2.47.67A2.34,2.34,0,0,0,5,11a2.35,2.35,0,0,0,.61,1.76A2.4,2.4,0,0,0,7.34,13.38Zm13.35,1.8a1,1,0,0,1-.64-.16,1.3,1.3,0,0,1-.35-.65L15.81,1.51a3,3,0,0,1-.15-.67.36.36,0,0,1,.41-.41H17.7a1,1,0,0,1,.65.16,1.4,1.4,0,0,1,.33.65l2.79,11,2.59-11A1.17,1.17,0,0,1,24.39.6a1.1,1.1,0,0,1,.67-.16H26.4a1.1,1.1,0,0,1,.67.16,1.17,1.17,0,0,1,.32.65L30,12.39,32.88,1.25A1.39,1.39,0,0,1,33.22.6a1,1,0,0,1,.65-.16h1.54a.36.36,0,0,1,.41.41,1.36,1.36,0,0,1,0,.26,3.64,3.64,0,0,1-.12.41l-4,12.86a1.3,1.3,0,0,1-.35.65,1,1,0,0,1-.64.16H29.25a1,1,0,0,1-.67-.17,1.26,1.26,0,0,1-.32-.67L25.67,3.64,23.11,14.34a1.26,1.26,0,0,1-.32.67,1,1,0,0,1-.67.17Zm21.36.44a11.28,11.28,0,0,1-2.56-.29,7.44,7.44,0,0,1-1.92-.67,1,1,0,0,1-.61-.93v-.84q0-.52.38-.52a.9.9,0,0,1,.31.06l.42.17a8.77,8.77,0,0,0,1.83.58,9.78,9.78,0,0,0,2,.2,4.48,4.48,0,0,0,2.43-.55,1.76,1.76,0,0,0,.86-1.57,1.61,1.61,0,0,0-.45-1.16A4.29,4.29,0,0,0,43,9.22l-2.41-.76A5.15,5.15,0,0,1,38,6.78a3.94,3.94,0,0,1-.83-2.41,3.7,3.7,0,0,1,.45-1.85,4.47,4.47,0,0,1,1.19-1.37A5.27,5.27,0,0,1,40.51.29,7.4,7.4,0,0,1,42.6,0a8.87,8.87,0,0,1,1.12.07q.57.07,1.08.19t.95.26a4.27,4.27,0,0,1,.7.29,1.59,1.59,0,0,1,.49.41.94.94,0,0,1,.15.55v.79q0,.52-.38.52a1.76,1.76,0,0,1-.64-.2,7.74,7.74,0,0,0-3.2-.64,4.37,4.37,0,0,0-2.21.47,1.6,1.6,0,0,0-.79,1.48,1.58,1.58,0,0,0,.49,1.18,4.94,4.94,0,0,0,1.83.92L44.55,7a5.08,5.08,0,0,1,2.57,1.6A3.76,3.76,0,0,1,47.9,11a4.21,4.21,0,0,1-.44,1.93,4.4,4.4,0,0,1-1.21,1.47,5.43,5.43,0,0,1-1.85.93A8.25,8.25,0,0,1,42.05,15.62Z"></path><path class="cls-2" d="M45.19,23.81C39.72,27.85,31.78,30,25,30A36.64,36.64,0,0,1,.22,20.57c-.51-.46-.06-1.09.56-.74A49.78,49.78,0,0,0,25.53,26.4,49.23,49.23,0,0,0,44.4,22.53C45.32,22.14,46.1,23.14,45.19,23.81Z"></path><path class="cls-2" d="M47.47,21.21c-.7-.9-4.63-.42-6.39-.21-.53.06-.62-.4-.14-.74,3.13-2.2,8.27-1.57,8.86-.83s-.16,5.89-3.09,8.35c-.45.38-.88.18-.68-.32C46.69,25.8,48.17,22.11,47.47,21.21Z"></path></svg>
+
+</a>
+
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="Search...">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="../../../js/lunr.min.js?1725683551"></script>
+<script type="text/javascript" src="../../../js/auto-complete.js?1725683551"></script>
+<script type="text/javascript">
+    
+        var baseurl = "\/\/vi";
+    
+</script>
+<script type="text/javascript" src="../../../js/search.js?1725683551"></script>
+
+    
+  </div>
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/1-prerequisite/" title="Các bước chuẩn bị" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/1-prerequisite/">
+          <b>1. </b>Các bước chuẩn bị
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/1-prerequisite/1-download-jupyter-notebook/" title="Tải Jupyter Notebook" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/1-prerequisite/1-download-jupyter-notebook/">
+          <b>1.1 </b>Tải Jupyter Notebook
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/1-prerequisite/2-download-docker-desktop/" title="Tải và cài đặt Docker Desktop" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/1-prerequisite/2-download-docker-desktop/">
+          <b>1.2 </b>Tải và cài đặt Docker Desktop
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/2-build-model/" title="Xây dựng mô hình học máy" class="dd-item 
+        parent
+        
+        
+        ">
+      <a href="../../../vi/2-build-model/">
+          <b>2. </b>Xây dựng mô hình học máy
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/2-build-model/1-download-and-prepare-data/" title="Thu thập và chuẩn bị dữ liệu" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/2-build-model/1-download-and-prepare-data/">
+          <b>2.1 </b>Thu thập và chuẩn bị dữ liệu
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/2-build-model/2-feature-engineering/" title="Trích chọn đặc trưng" class="dd-item 
+        
+        active
+        
+        ">
+      <a href="../../../vi/2-build-model/2-feature-engineering/">
+          <b>2.2 </b>Trích chọn đặc trưng
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/2-build-model/3-outlier-detection/" title="Loại bỏ dữ liệu ngoại lai" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/2-build-model/3-outlier-detection/">
+          <b>2.3 </b>Loại bỏ dữ liệu ngoại lai
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/2-build-model/4-xgboost-model/" title="Huấn luyện mô hình XGBoost" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/2-build-model/4-xgboost-model/">
+          <b>2.4 </b>Huấn luyện mô hình XGBoost
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/2-build-model/5-model-evaluation/" title="Đánh giá mô hình" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/2-build-model/5-model-evaluation/">
+          <b>2.5 </b>Đánh giá mô hình
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/3-deploy-model/" title="Triển khai mô hình" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/3-deploy-model/">
+          <b>3. </b>Triển khai mô hình
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/3-deploy-model/1-create-api/" title="Khởi tạo API" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/3-deploy-model/1-create-api/">
+          <b>3.1 </b>Khởi tạo API
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/3-deploy-model/2-configure-docker-container/" title="Tinh chỉnh Docker container" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/3-deploy-model/2-configure-docker-container/">
+          <b>3.2 </b>Tinh chỉnh Docker container
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/3-deploy-model/2-configure-docker-container/1-create-dockerfile/" title="Khởi tạo Dockerfile" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/3-deploy-model/2-configure-docker-container/1-create-dockerfile/">
+          <b>3.2.1 </b>Khởi tạo Dockerfile
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/3-deploy-model/2-configure-docker-container/2-create-docker-container/" title="Khởi tạo Docker container" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/3-deploy-model/2-configure-docker-container/2-create-docker-container/">
+          <b>3.2.2 </b>Khởi tạo Docker container
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/3-deploy-model/3-test-api/" title="Kiểm tra API" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/3-deploy-model/3-test-api/">
+          <b>3.3 </b>Kiểm tra API
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/3-deploy-model/4-automate-inference/" title="Tự động dự đoán" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/3-deploy-model/4-automate-inference/">
+          <b>3.4 </b>Tự động dự đoán
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/vi/4-cleaning-resources/" title="Dọn dẹp tài nguyên" class="dd-item 
+        
+        
+        
+        ">
+      <a href="../../../vi/4-cleaning-resources/">
+          <b>4. </b>Dọn dẹp tài nguyên
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+         
+    </ul>
+
+    
+    
+      <section id="shortcuts">
+        <h3>More</h3>
+        <ul>
+          
+              <li> 
+                  <a class="padding" href="http://awsstudygroup.com"><i class='fab fa-aws'></i> AWS Study Group - Blog</a>
+              </li>
+          
+              <li> 
+                  <a class="padding" href="https://www.facebook.com/groups/660548818043427/"><i class='fab fa-facebook'></i> AWS Study Group - Nhóm FB</a>
+              </li>
+          
+        </ul>
+      </section>
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+        <li>
+          <a class="padding">
+            <i class="fas fa-language fa-fw"></i>
+          <div class="select-style">
+            <select id="select-language" onchange="location = this.value;">
+          
+          
+          
+              
+              
+                  
+                    
+                    
+                      <option id="en" value="/2-build-model/2-feature-engineering/">English</option>
+                    
+                  
+              
+                  
+              
+          
+              
+              
+                  
+              
+                  
+                    
+                    
+                      <option id="vi" value="/vi/2-build-model/2-feature-engineering/" selected>Tiếng Việt</option>
+                    
+                  
+              
+          
+        </select>
+        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+          width="255px" height="255px" viewBox="0 0 255 255" style="enable-background:new 0 0 255 255;" xml:space="preserve">
+          <g>
+            <g id="arrow-drop-down">
+              <polygon points="0,63.75 127.5,191.25 255,63.75 		" />
+            </g>
+          </g>
+        </svg>
+        </div>
+        </a>
+        </li>
+      
+      
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> Clear History</a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <left>
+    
+     <b> Workshop</b> <br>
+    <img src="https://hitwebcounter.com/counter/counter.php?page=7831210&style=0038&nbdigits=9&type=page&initCount=0" title="Migrate" Alt="web counter"   border="0" /></a>  <br>
+     <b> <a href="https://cloudjourney.awsstudygroup.com/">Cloud Journey</a></b> <br>
+    <img src="https://hitwebcounter.com/counter/counter.php?page=7830807&style=0038&nbdigits=9&type=page&initCount=0" title="Total CLoud Journey" Alt="web counter"   border="0"   />
+     
+</left>
+<left>
+    <br>
+    <br>
+        <b> Last Updated </b> <br>
+        <i><font color=orange>07-09-2024</font></i>
+    </left>
+    <left>
+        <br>
+        <br>
+            <b> Team </b> <br>
+           
+            <i>
+                <a href="https://www.linkedin.com/in/jotaguy"  style="color:orange">Gia Hưng</a>
+        </i>
+        </left>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    </section>
+  </div>
+</nav>
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='../../../vi/'>Xây dựng và triển khai mô hình học máy dự báo chuỗi thời gian</a> > <a href='../../../vi/2-build-model/'>Xây dựng mô hình học máy</a> > Trích chọn đặc trưng
+          
+        
+          
+        
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              Trích chọn đặc trưng
+            </h1>
+          
+
+        
+
+
+
+	<h4 id="chọn-biến-độ-trễ">Chọn biến độ trễ</h4>
+<p><strong>Biến độ trễ</strong> hay <strong>lag feature</strong> là các biến chứa dữ liệu trong quá khứ của biến mục tiêu. Nói cách khác, <strong>biến độ trễ</strong> cho phép mô hình của chúng ta nhìn vào các giá trị trong quá khứ của biến phụ thuộc để đưa ra dự báo cho giá trị trong tương lai. Để xác định mức độ trễ phù hợp cho một chuỗi thời gian, ta tiến hành vẽ đồ thị <strong>tự tương quan</strong> (Autocorrelation) và <strong>tự tương quan riêng phần</strong> (Partial Autocorrelation) cho chuỗi.</p>
+<ol>
+<li>Để vẽ các đồ thị trên, ta tiến hành gọi ra hai hàm <strong>plot_acf</strong> và <strong>plot_pacf</strong> trong thư viện <strong>statsmodels</strong>. Sau đó tiến hành cấu hình giao diện hình vẽ bằng các hàm của thư viện <strong>matplotlib</strong>:
+<ul>
+<li>Hàm <strong>figure</strong> với tham số <strong>figsize</strong> để điều chỉnh kích cỡ của biểu đồ, hàm <strong>subplot</strong> giúp sắp xếp các biểu đồ trong một ô hiển thị, hàm <strong>title</strong> để đặt tên, dùng <strong>tight_layout</strong> giúp đảm bảo các biểu đồ không bị chồng lấn, và cuối cùng thực hiện lệnh <strong>plt.show()</strong> để xuất biểu đồ ra màn hình.</li>
+<li>Với các hàm <strong>plot_acf</strong> và <strong>plot_pacf</strong>, ta truyền dữ liệu input là chuỗi <strong>Targets</strong> cần phân tích, độ trễ tối đa đặt <strong>20</strong>. Biểu đồ sẽ có trục hoành là các độ trễ tương ứng với các giá trị correlation được thể hiện trên trục tung.</li>
+</ul>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Specify lag features of a time series</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> statsmodels.graphics.tsaplots <span style="color:#f92672">import</span> plot_acf, plot_pacf
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">6</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ACF plot</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">121</span>)
+</span></span><span style="display:flex;"><span>plot_acf(df[<span style="color:#e6db74">&#39;Targets&#39;</span>]<span style="color:#f92672">.</span>dropna(), lags<span style="color:#f92672">=</span><span style="color:#ae81ff">20</span>, ax<span style="color:#f92672">=</span>plt<span style="color:#f92672">.</span>gca())
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Autocorrelation Function (ACF)&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># PACF plot</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">122</span>)
+</span></span><span style="display:flex;"><span>plot_pacf(df[<span style="color:#e6db74">&#39;Targets&#39;</span>]<span style="color:#f92672">.</span>dropna(), lags<span style="color:#f92672">=</span><span style="color:#ae81ff">20</span>, ax<span style="color:#f92672">=</span>plt<span style="color:#f92672">.</span>gca())
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Partial Autocorrelation Function (PACF)&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>tight_layout()
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>show()
+</span></span></code></pre></div><ol start="2">
+<li>Sau khi chạy đoạn code trên, ta sẽ thấy được đồ thị như sau hiện lên trên màn hình. Nhận xét đồ thị, ta có thể kết luận rằng chuỗi dữ liệu của chúng ta không có mối quan hệ tương quan với các giá trị của chính nó trong quá khứ, vì từ độ trễ 1 (giá trị liền trước) trở đi các đường correlation không có ý nghĩa thống kê (<em>không vượt ra ngoài khoảng xanh bám sát trục hoành</em>). Ngoại trừ giá trị ở độ trễ 0 có correlation cao, nhưng ta không thể có được feature này tại thời điểm dự báo. Vì thế, ta sẽ không cần tạo các biến độ trễ trong trường hợp này.</li>
+</ol>
+<p><img alt="ACF and PACF charts" src="../../../images/2/workshop_pic12.png?width=50pc"></p>
+<h4 id="tạo-ra-các-biến-dự-báo-từ-kiến-thức-về-lĩnh-vực">Tạo ra các biến dự báo từ kiến thức về lĩnh vực</h4>
+<ol>
+<li>Chỉ số <strong>Bid-Ask-Spread</strong> là một chỉ số quan trọng trong thị trường tài chính, phản ánh sự chênh lệch giữa giá <strong>Bid</strong> (giá mua cao nhất mà người mua sẵn sàng trả) và giá <strong>Ask</strong> (giá bán thấp nhất mà người bán sẵn sàng chấp nhận), <strong>Bid-Ask-Spread</strong> thường được dùng để dự báo độ biến động của giá. Ta sử dụng dữ liệu về giá cao nhất (<strong>High</strong>) và giá thấp nhất (<strong>Low</strong>) để tính toán Bid-Ask-Spread (<strong>BAS</strong>) bằng đoạn code sau.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Computing Bid-Ask spread as a feature</span>
+</span></span><span style="display:flex;"><span>df[<span style="color:#e6db74">&#39;BAS&#39;</span>]<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>(df[<span style="color:#e6db74">&#39;High&#39;</span>]<span style="color:#f92672">-</span>df[<span style="color:#e6db74">&#39;Low&#39;</span>])<span style="color:#f92672">/</span>(df[<span style="color:#e6db74">&#39;High&#39;</span>]<span style="color:#f92672">+</span>df[<span style="color:#e6db74">&#39;Low&#39;</span>])
+</span></span></code></pre></div><ol start="2">
+<li>Tiếp theo, ta sẽ dùng kỹ thuật <em>Trung bình trượt</em> trong 7 ngày của biến <strong>Targets</strong> để tạo thêm biến dự báo tạm gọi tắt <strong>MA_7</strong>. Đây là một kỹ thuật thường dùng trong dự báo tài chính, ta sẽ tính trung bình cộng của biến <strong>Targets</strong> trong <em>1 tuần</em>, và <strong>shift</strong> giá trị xuống một dòng để không bị hiện tượng rò rỉ dữ liệu (<strong>Data Leakage</strong>).</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Computing moving average feature</span>
+</span></span><span style="display:flex;"><span>df[<span style="color:#e6db74">&#39;MA_7&#39;</span>]<span style="color:#f92672">=</span> (df[<span style="color:#e6db74">&#39;Targets&#39;</span>]<span style="color:#f92672">.</span>rolling(window<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span>)<span style="color:#f92672">.</span>sum())<span style="color:#f92672">/</span><span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>df[<span style="color:#e6db74">&#39;MA_7&#39;</span>]<span style="color:#f92672">=</span>df[<span style="color:#e6db74">&#39;MA_7&#39;</span>]<span style="color:#f92672">.</span>shift(<span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><ol start="3">
+<li>Một chỉ báo quan trọng giúp đo độ biến động là <strong>Standard deviation</strong>, với cú pháp tương tự như <strong>MA_7</strong> ta tính được giá trị <strong>Standard deviation</strong> trong <em>1 tuần</em> của biến mục tiêu với đoạn code sau.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#Computing standard deviation of return </span>
+</span></span><span style="display:flex;"><span>df[<span style="color:#e6db74">&#39;std_7&#39;</span>]<span style="color:#f92672">=</span>df[<span style="color:#e6db74">&#39;Targets&#39;</span>]<span style="color:#f92672">.</span>rolling(window<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span>)<span style="color:#f92672">.</span>std()
+</span></span><span style="display:flex;"><span>df[<span style="color:#e6db74">&#39;std_7&#39;</span>]<span style="color:#f92672">=</span>df[<span style="color:#e6db74">&#39;std_7&#39;</span>]<span style="color:#f92672">.</span>shift(<span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><h4 id="chọn-biến-dự-báo-phù-hợp">Chọn biến dự báo phù hợp</h4>
+<ol>
+<li>Sau khi đã xây dựng được các biến dự báo, ta sẽ tiến hành đánh giá độ tương quan giữa các biến với biến mục tiêu bằng chỉ số <strong>Mutual Information</strong> để có thể thực hiện lựa chọn các biến có ý nghĩa.
+<ul>
+<li>Đầu tiên, ta cần gọi hàm <strong>mutual_info_regression</strong> từ thư viện <strong>scikit-learn</strong>.</li>
+<li>Sau đó loại bỏ các dòng dữ liệu bị khuyết do quá trình tạo biến ở trên gây nên bằng hàm <strong>dropna()</strong>.</li>
+<li>Tiến hành tạo một bảng dữ liệu chỉ chứa các biến dự đoán bằng cách bỏ đi cột <strong>Targets</strong> và lưu vào một bảng tên <strong>feature</strong>.</li>
+<li>Cuối cùng, thực hiện tính giá trị <strong>Mutual Information</strong>, lưu vào một bảng dữ liệu và in ra màn hình.</li>
+</ul>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.feature_selection <span style="color:#f92672">import</span> mutual_info_regression
+</span></span><span style="display:flex;"><span>df<span style="color:#f92672">=</span>df<span style="color:#f92672">.</span>dropna()
+</span></span><span style="display:flex;"><span>feature <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>drop(columns<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;Targets&#39;</span>])
+</span></span><span style="display:flex;"><span>mi_score <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>Series(mutual_info_regression(feature, df[<span style="color:#e6db74">&#39;Targets&#39;</span>]), name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;MI Scores&#34;</span>, index<span style="color:#f92672">=</span>feature<span style="color:#f92672">.</span>columns)
+</span></span><span style="display:flex;"><span>mi_score
+</span></span></code></pre></div><p>Kết quả khi chạy thành công sẽ nhìn như sau:</p>
+<p><img alt="MI score" src="../../../images/2/workshop_pic13.png?width=40pc"></p>
+<ol start="2">
+<li>Để dễ dàng so sánh hơn, ta sẽ tạo một hàm vẽ biểu đồ <em>Thanh ngang</em> biểu thị các <strong>MI score</strong> tính được bằng dòng code sau.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">plot_mi_scores</span>(scores):
+</span></span><span style="display:flex;"><span>    scores <span style="color:#f92672">=</span> scores<span style="color:#f92672">.</span>sort_values(ascending<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>    width <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>arange(len(scores))
+</span></span><span style="display:flex;"><span>    ticks <span style="color:#f92672">=</span> list(scores<span style="color:#f92672">.</span>index)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>barh(width, scores)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>yticks(width, ticks)
+</span></span><span style="display:flex;"><span>    plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;Mutual Information Scores&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>figure(dpi<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">5</span>))
+</span></span><span style="display:flex;"><span>plot_mi_scores(mi_score)
+</span></span></code></pre></div><p>Kết quả của tổ hợp lệnh trên như sau:</p>
+<p><img alt="Plot MI score" src="../../../images/2/workshop_pic15.png?width=50pc"></p>
+<ol start="3">
+<li>Nhìn vào biểu đồ, ta thấy các biến <strong>std_7</strong>, <strong>BAS</strong>, và <strong>Close</strong> là các yếu tố quan trọng nhất để có thể dự báo được <strong>Targets</strong>. Bên cạnh đó, các biến <strong>Open</strong>, <strong>Low</strong>, và <strong>High</strong> không thực sự cho biết nhiều thông tin về biến mục tiêu. Vì vậy, ta tiến hành loại bỏ 3 biến này để tránh gây nên hiện tượng <em>đa cộng tuyến</em> trong hồi quy bằng hàm <strong>drop</strong>.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>df<span style="color:#f92672">.</span>drop(columns<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;Open&#39;</span>, <span style="color:#e6db74">&#39;Low&#39;</span>, <span style="color:#e6db74">&#39;High&#39;</span>], inplace<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><ol start="4">
+<li>Hãy in ra bảng dữ liệu <strong>df</strong>. Nếu bạn làm theo các chỉ dẫn, bảng dữ liệu của bạn sẽ có dạng như sau. Như vậy, ta chỉ còn lại <em>1 biến phụ thuộc</em> và <em>5 biến dự báo</em>.</li>
+</ol>
+<p><img alt="DataFrame with features" src="../../../images/2/workshop_pic14.png?width=50pc"></p>
+<p>Chúc mừng các bạn đã hoàn thành phần thực hành <strong>Trích chọn đặc trưng</strong>.</p>
+
+
+
+
+
+<footer class=" footline" >
+	
+</footer>
+
+        
+        </div> 
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+        
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+        
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="../../../vi/2-build-model/1-download-and-prepare-data/" title="Thu thập và chuẩn bị dữ liệu"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="../../../vi/2-build-model/3-outlier-detection/" title="Loại bỏ dữ liệu ngoại lai" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+    
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="../../../js/clipboard.min.js?1725683551"></script>
+    <script src="../../../js/perfect-scrollbar.min.js?1725683551"></script>
+    <script src="../../../js/perfect-scrollbar.jquery.min.js?1725683551"></script>
+    <script src="../../../js/jquery.sticky.js?1725683551"></script>
+    <script src="../../../js/featherlight.min.js?1725683551"></script>
+    <script src="../../../js/highlight.pack.js?1725683551"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="../../../js/modernizr.custom-3.6.0.js?1725683551"></script>
+    <script src="../../../js/learn.js?1725683551"></script>
+    <script src="../../../js/hugo-learn.js?1725683551"></script>
+
+    <link href="../../../mermaid/mermaid.css?1725683551" rel="stylesheet" />
+    <script src="../../../mermaid/mermaid.js?1725683551"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-158079754-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>
